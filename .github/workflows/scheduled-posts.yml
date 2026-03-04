@@ -1,0 +1,82 @@
+name: Publish Scheduled Posts
+
+on:
+  schedule:
+    - cron: '0 9 * * *' # Runs daily at 9 AM UTC
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Publish scheduled posts
+        run: |
+          TODAY=$(date -u +"%Y-%m-%d")
+          echo "Today is $TODAY"
+
+          # Read scheduled posts config
+          if [ ! -f _scheduled.json ]; then
+            echo "No _scheduled.json found"
+            exit 0
+          fi
+
+          PUBLISHED=false
+
+          # Process each scheduled post
+          jq -c '.[]' _scheduled.json | while read -r entry; do
+            POST_DATE=$(echo "$entry" | jq -r '.date')
+            DRAFT=$(echo "$entry" | jq -r '.draft')
+            TARGET=$(echo "$entry" | jq -r '.target')
+            MARKER=$(echo "$entry" | jq -r '.marker')
+
+            if [ "$POST_DATE" = "$TODAY" ] || [ "$POST_DATE" \< "$TODAY" ]; then
+              echo "Publishing: $DRAFT -> $TARGET"
+
+              if [ ! -f "$DRAFT" ]; then
+                echo "Draft file not found: $DRAFT"
+                continue
+              fi
+
+              # Read draft content
+              CONTENT=$(cat "$DRAFT")
+
+              # Insert content after the marker in target file
+              awk -v marker="$MARKER" -v content="$CONTENT" '
+                $0 ~ marker {
+                  print $0
+                  print content
+                  next
+                }
+                { print }
+              ' "$TARGET" > "${TARGET}.tmp"
+              mv "${TARGET}.tmp" "$TARGET"
+
+              # Remove the published draft
+              rm "$DRAFT"
+
+              PUBLISHED=true
+              echo "Published $DRAFT successfully"
+            else
+              echo "Not yet time for $DRAFT (scheduled: $POST_DATE)"
+            fi
+          done
+
+          # Remove published entries from _scheduled.json
+          jq --arg today "$TODAY" '[.[] | select(.date > $today)]' _scheduled.json > _scheduled.tmp
+          mv _scheduled.tmp _scheduled.json
+
+          echo "PUBLISHED=$PUBLISHED" >> $GITHUB_ENV
+
+      - name: Commit and push
+        if: env.PUBLISHED == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Publish scheduled post(s)"
+          git push

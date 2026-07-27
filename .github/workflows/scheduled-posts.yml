@@ -42,6 +42,17 @@ jobs:
                 continue
               fi
 
+              # Thoughts and Check-Ins are encrypted, so their markers no longer
+              # live in the published HTML. Without this guard awk would copy the
+              # file through unchanged and then delete the draft — losing the post.
+              # (The loop runs in a pipeline subshell, so flag it and fail after.)
+              if ! grep -q -- "$MARKER" "$TARGET"; then
+                echo "::error::Marker '$MARKER' not found in $TARGET — nothing was published."
+                echo "If this is a private page, add the post to _private/ and run 'node encrypt.js' locally instead."
+                touch /tmp/publish-failed
+                continue
+              fi
+
               # Read draft content
               CONTENT=$(cat "$DRAFT")
 
@@ -65,6 +76,11 @@ jobs:
               echo "Not yet time for $DRAFT (scheduled: $POST_DATE)"
             fi
           done
+
+          if [ -f /tmp/publish-failed ]; then
+            echo "One or more scheduled posts could not be published (see errors above)."
+            exit 1
+          fi
 
           # Remove published entries from _scheduled.json
           jq --arg today "$TODAY" '[.[] | select(.date > $today)]' _scheduled.json > _scheduled.tmp

@@ -1,0 +1,6 @@
+# macOS
+.DS_Store
+
+# Plaintext source for the password-protected pages.
+# NEVER commit this — it is the unencrypted copy of Thoughts and Check-Ins.
+_private/

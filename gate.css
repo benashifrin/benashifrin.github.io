@@ -1,0 +1,48 @@
+/* Styles for the password gate only. The unlocked content keeps the site's
+   default look, so nothing here targets the decrypted markup. */
+
+.gate {
+    max-width: 32rem;
+    margin: 2rem 0;
+}
+
+.gate-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.gate-input {
+    flex: 1 1 12rem;
+    padding: 0.5rem;
+    font: inherit;
+    border: 1px solid #999;
+}
+
+.gate-button {
+    padding: 0.5rem 1rem;
+    font: inherit;
+    cursor: pointer;
+}
+
+.gate-button[disabled] {
+    cursor: default;
+    opacity: 0.6;
+}
+
+.gate-error {
+    color: #b00020;
+    margin: 0.5rem 0;
+}
+
+.gate-hint {
+    color: #555;
+    font-size: 0.9em;
+}
+
+/* The rest of the site renders light-only, so pin the gate to light too —
+   otherwise the browser's dark preference gives a black input on a white page. */
+.gate-input {
+    color-scheme: light;
+}

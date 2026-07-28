@@ -37,7 +37,7 @@
     <script>
         (function() {
             // encoded character codes — no readable email in source
-            var c = [98,101,110,64,109,97,116,99,104,97,46,99,111,109];
+            var c = [98,101,110,64,100,101,110,116,105,118,111,108,118,101,46,99,111,109];
             var mailto = [109,97,105,108,116,111,58].map(function(n) { return String.fromCharCode(n); }).join('');
             Gate.mount({
                 payload: 'locked/checkins.json',

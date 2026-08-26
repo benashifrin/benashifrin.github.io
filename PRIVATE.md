@@ -52,6 +52,31 @@ rotation as "new posts are protected", not "old posts are retracted".
   `_private/`. The workflow now fails loudly instead of silently dropping a post.
   Schedule private posts by hand: edit `_private/`, run `encrypt.js`, push.
 
+## The site-wide gate (added 2026-08-23)
+
+Every page also loads `sitegate.js`, which puts a password screen — the pixel
+arena, the man, the monster — in front of the whole site. The password is
+`maninthearena`. Unlocking is remembered in `localStorage`, so it is asked once
+per browser, not once per page.
+
+This is a **soft** gate and a different thing from the encryption above. The
+page's markup still arrives in the browser; anyone who disables JavaScript or
+reads view-source walks straight past it. It keeps the site out of casual and
+search-engine hands. Thoughts and Check-Ins stay genuinely encrypted underneath
+it — that is the layer to trust.
+
+Changing the site password: put the new one through `shasum -a 256`, and update
+`PW_HASH` and `PW_XOR` near the top of `sitegate.js`.
+
+```
+printf 'newpassword' | shasum -a 256
+node -e "console.log(JSON.stringify(Array.from('newpassword').map(c=>c.charCodeAt(0)^90)))"
+```
+
+Editing the pixel art: the two frames are plain character grids at the top of
+`sitegate.js` — one character per pixel, keyed to `PALETTE`. The same renderer
+draws the browser-tab favicon from `FAVICON`.
+
 ## Local preview
 
 `gate.js` fetches `locked/*.json`, which browsers block on `file://`. Preview with

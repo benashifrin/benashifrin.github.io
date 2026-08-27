@@ -1,8 +1,15 @@
 # Private pages
 
-Thoughts and Check-Ins are password-protected. The published site contains only
-encrypted ciphertext — the writing itself is not in the HTML, not in any script,
-and not anywhere in this repo.
+Check-Ins is password-protected, as is the terminal's `thoughts` command. For
+those, the published site contains only encrypted ciphertext — the writing
+itself is not in the HTML, not in any script, and not anywhere in this repo.
+
+**Thoughts is no longer encrypted** (2026-08-27). Its writing was inlined into
+`Thoughts.html` as plaintext and published deliberately. It is readable by
+anyone with the repo URL, independently of the site-wide gate, and it is in git
+history permanently — re-encrypting it later would not retract it. Edit it
+directly in `Thoughts.html` now; `_private/thoughts-body.html` is no longer the
+source of truth, and `locked/thoughts.json` is a leftover nothing reads.
 
 ## How it fits together
 
@@ -18,8 +25,9 @@ entirely in the browser — the password is never sent anywhere.
 
 ## Adding or editing a post
 
-1. Edit the plaintext: `_private/thoughts-body.html`, `_private/checkins-body.html`,
-   or `_private/terminal-thoughts.html` (the terminal's `thoughts` command).
+1. Edit the plaintext: `_private/checkins-body.html` or
+   `_private/terminal-thoughts.html` (the terminal's `thoughts` command).
+   For Thoughts, edit `Thoughts.html` directly — it is not encrypted.
 2. Re-encrypt:
 
    ```
@@ -47,10 +55,12 @@ rotation as "new posts are protected", not "old posts are retracted".
   at leisure. Use a long one.
 - **`_private/` is not backed up by git** — that's the point, but it also means a
   lost laptop is a lost copy. Keep it somewhere safe.
-- **Scheduled posts** (`.github/workflows/scheduled-posts.yml`) can no longer
-  publish to the private pages, because their insert markers moved into
-  `_private/`. The workflow now fails loudly instead of silently dropping a post.
-  Schedule private posts by hand: edit `_private/`, run `encrypt.js`, push.
+- **Scheduled posts** (`.github/workflows/scheduled-posts.yml`) work again for
+  Thoughts: its `<!-- SCHEDULED_INSERT -->` marker is back in `Thoughts.html`
+  now that the page is plaintext. They still cannot reach Check-Ins, whose
+  marker lives in `_private/`; the workflow fails loudly there instead of
+  silently dropping a post. Schedule those by hand: edit `_private/`, run
+  `encrypt.js`, push.
 
 ## The site-wide gate (added 2026-08-23)
 

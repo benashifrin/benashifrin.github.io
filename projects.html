@@ -22,7 +22,8 @@
         <a href="Why.html">Why</a> |
         <a href="checkins.html">Check-Ins</a>
     </nav>
-    <h1>Projects Over the Past 7 Months</h1>
+    <h1>Projects Over the Past <span id="since-timer">months</span></h1>
+    <p>Since I started this website in July 2025.</p>
     <ul>
         <li><strong>AI Coach for Receptionists</strong> (didn't realize the size of competitors until a month in)</li>
         <li><strong>Most Technically Advanced Referral Program in Dentistry</strong> (in office but not enough value generated yet)</li>
@@ -34,5 +35,24 @@
     </ul>
 
     <h2>Matcha</h2>
+    <script>
+        (function() {
+            var start = new Date(2025, 6, 1); // started the website July 2025
+            var el = document.getElementById('since-timer');
+            function pad(n) { return n < 10 ? '0' + n : n; }
+            function tick() {
+                var now = new Date();
+                var months = (now.getFullYear() - start.getFullYear()) * 12 + now.getMonth() - start.getMonth();
+                var anchor = new Date(start.getFullYear(), start.getMonth() + months, 1);
+                if (anchor > now) { months--; anchor = new Date(start.getFullYear(), start.getMonth() + months, 1); }
+                var ms = now - anchor;
+                var days = Math.floor(ms / 864e5);
+                var h = Math.floor(ms / 36e5) % 24, m = Math.floor(ms / 6e4) % 60, s = Math.floor(ms / 1e3) % 60;
+                el.textContent = months + ' months, ' + days + ' days, ' + pad(h) + ':' + pad(m) + ':' + pad(s);
+            }
+            tick();
+            setInterval(tick, 1000);
+        })();
+    </script>
 </body>
 </html>

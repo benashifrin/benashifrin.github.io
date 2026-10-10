@@ -420,7 +420,13 @@ People I admire: <a href="https://jesseitzler.com/blogs/free-swim" target="_blan
 
         commands.projects = function() {
             return `<div class="output-text">
-<span class="section-title">Projects Over the Past 7 Months</span>
+<span class="section-title">Projects Over the Past ${(function() {
+    var start = new Date(2025, 6, 1), now = new Date();
+    var months = (now.getFullYear() - start.getFullYear()) * 12 + now.getMonth() - start.getMonth();
+    var days = Math.floor((now - new Date(2025, 6 + months, 1)) / 864e5);
+    return months + ' Months, ' + days + ' Days';
+})()}</span>
+Since I started this website in July 2025.
 
 <div class="list-item"><span class="bold-text">AI Coach for Receptionists</span> (didn't realize the size of competitors until a month in)</div>
 <div class="list-item"><span class="bold-text">Most Technically Advanced Referral Program in Dentistry</span> (in office but not enough value generated yet)</div>
@@ -447,6 +453,10 @@ People I admire: <a href="https://jesseitzler.com/blogs/free-swim" target="_blan
 <div class="list-item"><span class="bold-text">Unleash the Power of Storytelling</span> by Rob Biesenbach</div>
 <div class="list-item"><span class="bold-text">Community Oriented Dentist</span></div>
 <div class="list-item"><span class="bold-text">Grow Your Practice Online</span></div>
+
+<span class="section-title">Currently Reading</span>
+
+<div class="list-item"><span class="bold-text">Man's Search for Meaning</span> by Viktor E. Frankl</div>
 
 <span class="section-title">Books I Want to Read This Year</span>
 
@@ -511,6 +521,13 @@ I was meeting a tutor on Preply once a week to learn Russian, but have stopped f
             return `<div class="output-text">
 <span class="section-title">The Process</span>
 
+<span class="subsection-title">Now: Matcha</span>
+Now that I am building Matcha, I am focusing mostly on sales and marketing. My main channels are:
+<div class="list-item"><span class="bold-text">Cold calls</span></div>
+<div class="list-item"><span class="bold-text">Referrals</span></div>
+<div class="list-item"><span class="bold-text">Communities</span></div>
+
+<span class="subsection-title">Pre-Matcha</span>
 There are different ways to start a startup, but they mostly boil down to this:
 <span class="em-text">You are either coding shit, selling shit, or doing jack shit</span>
 
